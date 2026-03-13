@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── SVG Sprite ── -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="icon-wand" viewBox="0 0 576 512">
+        <path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1 14.1 37.7c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/>
+    </symbol>
+    <symbol id="icon-moon" viewBox="0 0 384 512">
+        <path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/>
+    </symbol>
+    <symbol id="icon-sun" viewBox="0 0 512 512">
+        <path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM256 160a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/>
+    </symbol>
+    <symbol id="icon-dice" viewBox="0 0 512 512">
+        <path d="M255.9 0c-15.4 0-30.2 3.3-43.5 9.3L34.1 91.9C13.7 101.2 0 121.5 0 144.4V367.6c0 22.8 13.7 43.2 34.1 52.5l178.3 82.6c13.3 6.1 28.1 9.3 43.5 9.3s30.2-3.3 43.5-9.3l178.3-82.6c20.4-9.4 34.1-29.7 34.1-52.5V144.4c0-22.8-13.7-43.2-34.1-52.5L299.4 9.3C286.1 3.3 271.3 0 255.9 0zM128 176a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm128 128a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM384 176a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM128 304a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM256 176a32 32 0 1 1 0 64 32 32 0 1 1 0-64zM384 304a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+    </symbol>
+    <symbol id="icon-microchip" viewBox="0 0 512 512">
+        <path d="M176 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40c-35.3 0-64 28.7-64 64l-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0 0 56-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0 0 56-40 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l40 0c0 35.3 28.7 64 64 64l0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 56 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40 56 0 0 40c0 13.3 10.7 24 24 24s24-10.7 24-24l0-40c35.3 0 64-28.7 64-64l40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-56 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0 0-56 40 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-40 0c0-35.3-28.7-64-64-64l0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-56 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40-56 0 0-40zM160 128l192 0c17.7 0 32 14.3 32 32l0 192c0 17.7-14.3 32-32 32l-192 0c-17.7 0-32-14.3-32-32l0-192c0-17.7 14.3-32 32-32zm192 32l-192 0 0 192 192 0 0-192z"/>
+    </symbol>
+    <symbol id="icon-images" viewBox="0 0 576 512">
+        <path d="M160 80l352 0c8.8 0 16 7.2 16 16l0 224c0 8.8-7.2 16-16 16l-21.2 0L388.1 178.9c-4.5-6.2-11.7-9.9-19.3-9.9s-14.8 3.7-19.3 9.9l-87.3 120.2-46.7-58.4c-4.5-5.6-11.3-8.9-18.4-8.9s-14 3.3-18.4 8.9L128 320l0-224c0-8.8 7.2-16 16-16zM80 400l352 0 0-48 21.2 0C478.3 352 512 318.3 512 276l0-224c0-44.2-35.8-80-80-80L160 -28C115.8-28 80 7.8 80 52l0 224 0 124zM0 456c0 30.9 25.1 56 56 56l464 0c30.9 0 56-25.1 56-56l0-8c0-13.3-10.7-24-24-24L24 424c-13.3 0-24 10.7-24 24l0 8z"/>
+    </symbol>
+    <symbol id="icon-crop" viewBox="0 0 512 512">
+        <path d="M128 32c0-17.7-14.3-32-32-32S64 14.3 64 32l0 96L32 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l32 0 0 192c0 35.3 28.7 64 64 64l192 0 0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-32 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0L384 128c0-35.3-28.7-64-64-64L128 64l0-32zM320 192l0 192L128 384l0-192 192 0z"/>
+    </symbol>
+    <symbol id="icon-chevron" viewBox="0 0 512 512">
+        <path d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z"/>
+    </symbol>
+    <symbol id="icon-bolt" viewBox="0 0 448 512">
+        <path d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288l111.5 0L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-29.9-20.7l-111.5 0L349.4 44.6z"/>
+    </symbol>
+    <symbol id="icon-flask" viewBox="0 0 448 512">
+        <path d="M288 0L160 0 128 0C110.3 0 96 14.3 96 32s14.3 32 32 32l0 132.8L51.3 368l-2 2.7C23.4 409.6 19 449.5 35 484.2C51.6 520 88.4 512 104.9 512l238.2 0c16.5 0 53.3 8 69.9-27.8c16-34.7 11.6-74.6-14.3-113.5l-2-2.7L320 196.8 320 64c17.7 0 32-14.3 32-32s-14.3-32-32-32L288 0zM163.7 256l120.6 0 38.5 53L125.2 309l38.5-53z"/>
+    </symbol>
+    <symbol id="icon-image" viewBox="0 0 512 512">
+        <path d="M0 96C0 60.7 28.7 32 64 32l384 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.4 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6l96 0 32 0 208 0c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-128-192z"/>
+    </symbol>
+    <symbol id="icon-film" viewBox="0 0 512 512">
+        <path d="M0 96C0 60.7 28.7 32 64 32l384 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zM48 368l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm368-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM48 240l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm368-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM48 112l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm368-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM160 128l0 256c0 17.7 14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-256c0-17.7-14.3-32-32-32l-128 0c-17.7 0-32 14.3-32 32z"/>
+    </symbol>
+    <symbol id="icon-rocket" viewBox="0 0 512 512">
+        <path d="M156.6 384.9L125.7 356c-8.1-7.4-11.1-19.1-7.4-29.5l31.1-85.8 76.4 76.4-69.2 67.8zM268.7 311L201 243.3c2.3-7.9 4.9-15.7 7.8-23.4l4.5-12.3c10.8-28.8 23.2-57.2 37.5-84.5 40.2-77.5 109.5-136.7 192.4-159.1l24.1-6.6 2.3 24.8c1.5 16 2.3 32.1 2.3 48.4 0 80.2-26.2 158.1-74.4 221.9-15.8 20.8-33.4 40.1-52.7 57.7L268.7 311zm-52.9 59.6l-42.6-42.6L292 239.2c2.4 3.2 4.8 6.5 7.1 9.8l11.3 16.7L215.8 370.6zM384 160a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM16 480l126.4-42.1 42.1 42.1L16 480z"/>
+    </symbol>
+    <symbol id="icon-square" viewBox="0 0 448 512">
+        <path d="M0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96z"/>
+    </symbol>
+    <symbol id="icon-grip" viewBox="0 0 448 512">
+        <path d="M128 136c0-22.1-17.9-40-40-40L40 96C17.9 96 0 113.9 0 136l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm0 192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm152-192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm0 192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm152-192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48zm0 192c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l48 0c22.1 0 40-17.9 40-40l0-48z"/>
+    </symbol>
+    <symbol id="icon-tv" viewBox="0 0 640 512">
+        <path d="M64 64l512 0c0-35.3-28.7-64-64-64L64 0C28.7 0 0 28.7 0 64l64 0zm448 64L128 128C92.7 128 64 156.7 64 192l0 192c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-192c0-35.3-28.7-64-64-64zM256 480l128 0 32 32-192 0 32-32z"/>
+    </symbol>
+    <symbol id="icon-mobile" viewBox="0 0 384 512">
+        <path d="M0 144C0 64.5 64.5 0 144 0L240 0c79.5 0 144 64.5 144 144l0 224c0 79.5-64.5 144-144 144l-96 0c-79.5 0-144-64.5-144-144L0 144zM144 48C90.1 48 48 90.1 48 144l0 224c0 53.9 42.1 96 96 96l96 0c53.9 0 96-42.1 96-96l0-224c0-53.9-42.1-96-96-96l-96 0zm48 384a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+    </symbol>
+    <symbol id="icon-download" viewBox="0 0 512 512">
+        <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 242.7-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7 288 32zM64 352c-35.3 0-64 28.7-64 64l0 32c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-101.5 0-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352 64 352zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"/>
+    </symbol>
+    <symbol id="icon-warning" viewBox="0 0 512 512">
+        <path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480L40 480c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24l0 112c0 13.3 10.7 24 24 24s24-10.7 24-24l0-112c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/>
+    </symbol>
+    <symbol id="icon-spinner" viewBox="0 0 512 512">
+        <path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm0 416a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM48 304a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm464-48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM142.9 437A48 48 0 1 0 75 369.1 48 48 0 1 0 142.9 437zm0-294.2A48 48 0 1 0 75 75a48 48 0 1 0 67.9 67.8zM369.1 437A48 48 0 1 0 437 369.1 48 48 0 1 0 369.1 437z"/>
+    </symbol>
+</svg>
+
+<div class="container">
+    <header class="header">
+        <div class="logo-wrapper">
+            <div class="logo">
+                <span class="icon"><svg width="26" height="26"><use href="#icon-wand"/></svg></span>
+            </div>
+            <h1>AI Image Generator</h1>
+        </div>
+        <button class="theme-toggle" id="themeToggle">
+            <span class="icon" id="themeIcon"><svg width="18" height="18"><use href="#icon-moon"/></svg></span>
+        </button>
+    </header>
+
+    <div class="main-content">
+        <form action="#" class="prompt-form" id="promptForm">
+
+            <!-- Prompt Container -->
+            <div class="prompt-container">
+                <textarea class="prompt-input" id="promptInput"
+                    placeholder="Describe your imagination in detail..." required autofocus></textarea>
+                <button type="button" class="prompt-btn" id="randomBtn" title="Random prompt">
+                    <span class="icon"><svg width="16" height="16"><use href="#icon-dice"/></svg></span>
+                </button>
+            </div>
+
+            <!-- Prompt Actions -->
+            <div class="prompt-actions">
+
+                <!-- Model -->
+                <div class="select-wrapper" id="modelWrapper">
+                    <button type="button" class="custom-select" id="modelBtn">
+                        <span class="icon"><svg width="15" height="15"><use href="#icon-microchip"/></svg></span>
+                        <span id="modelLabel">Select AI Model</span>
+                        <span class="icon chevron"><svg width="12" height="12"><use href="#icon-chevron"/></svg></span>
+                    </button>
+                    <ul class="dropdown-list" id="modelList">
+                        <li data-value="black-forest-labs/FLUX.1-schnell">
+                            <span class="icon"><svg width="13" height="13"><use href="#icon-bolt"/></svg></span>FLUX.1-schnell
+                        </li>
+                        <li data-value="black-forest-labs/FLUX.1-dev">
+                            <span class="icon"><svg width="13" height="13"><use href="#icon-flask"/></svg></span>FLUX.1-dev
+                        </li>
+                        <li data-value="stabilityai/stable-diffusion-xl-base-1.0">
+                            <span class="icon"><svg width="13" height="13"><use href="#icon-image"/></svg></span>Stable Diffusion XL
+                        </li>
+                        <li data-value="runwayml/stable-diffusion-v1-5">
+                            <span class="icon"><svg width="13" height="13"><use href="#icon-film"/></svg></span>Stable Diffusion v1.5
+                        </li>
+                        <li data-value="prompthero/openjourney">
+                            <span class="icon"><svg width="13" height="13"><use href="#icon-rocket"/></svg></span>Openjourney
+                        </li>
+                    </ul>
+                    <input type="hidden" id="modelSelect">
+                </div>
+
+                <!-- Count -->
+                <div class="select-wrapper" id="countWrapper">
+                    <button type="button" class="custom-select" id="countBtn">
+                        <span class="icon"><svg width="15" height="15"><use href="#icon-images"/></svg></span>
+                        <span id="countLabel">No. of Images</span>
+                        <span class="icon chevron"><svg width="12" height="12"><use href="#icon-chevron"/></svg></span>
+                    </button>
+                    <ul class="dropdown-list" id="countList">
+                        <li data-value="1"><span class="icon"><svg width="13" height="13"><use href="#icon-square"/></svg></span>1 Image</li>
+                        <li data-value="2"><span class="icon"><svg width="13" height="13"><use href="#icon-grip"/></svg></span>2 Images</li>
+                        <li data-value="3"><span class="icon"><svg width="13" height="13"><use href="#icon-grip"/></svg></span>3 Images</li>
+                        <li data-value="4"><span class="icon"><svg width="13" height="13"><use href="#icon-grip"/></svg></span>4 Images</li>
+                    </ul>
+                    <input type="hidden" id="countSelect">
+                </div>
+
+                <!-- Ratio -->
+                <div class="select-wrapper" id="ratioWrapper">
+                    <button type="button" class="custom-select" id="ratioBtn">
+                        <span class="icon"><svg width="15" height="15"><use href="#icon-crop"/></svg></span>
+                        <span id="ratioLabel">Aspect Ratio</span>
+                        <span class="icon chevron"><svg width="12" height="12"><use href="#icon-chevron"/></svg></span>
+                    </button>
+                    <ul class="dropdown-list" id="ratioList">
+                        <li data-value="1/1"><span class="icon"><svg width="13" height="13"><use href="#icon-square"/></svg></span>Square (1:1)</li>
+                        <li data-value="16/9"><span class="icon"><svg width="13" height="13"><use href="#icon-tv"/></svg></span>Landscape (16:9)</li>
+                        <li data-value="9/16"><span class="icon"><svg width="13" height="13"><use href="#icon-mobile"/></svg></span>Portrait (9:16)</li>
+                    </ul>
+                    <input type="hidden" id="ratioSelect">
+                </div>
+
+                <button type="submit" class="generate-btn" id="generateBtn">
+                    <span class="icon" id="generateIcon"><svg width="16" height="16"><use href="#icon-wand"/></svg></span>
+                    Generate
+                </button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="galleryGrid"></div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    const API_KEY = "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";
+
+    const RANDOM_PROMPTS = [
+        "A cyberpunk cityscape at night with neon lights reflecting on wet streets",
+        "A majestic dragon soaring through storm clouds at sunset",
+        "An enchanted forest with glowing mushrooms and fairy lights",
+        "A futuristic space station orbiting a colorful nebula",
+        "A cozy cabin in a snowy mountain forest at dusk",
+        "An underwater palace with bioluminescent sea creatures",
+        "A steampunk airship flying above Victorian London",
+        "A magical library with books floating in golden light",
+        "A samurai standing in a cherry blossom storm",
+        "An astronaut discovering an alien ocean on an exoplanet",
+    ];
+
+    let isGenerating = false;
+
+    const themeToggle = document.getElementById("themeToggle");
+    const themeIcon   = document.getElementById("themeIcon");
+    const promptInput = document.getElementById("promptInput");
+    const randomBtn   = document.getElementById("randomBtn");
+    const generateBtn = document.getElementById("generateBtn");
+    const generateIcon= document.getElementById("generateIcon");
+    const galleryGrid = document.getElementById("galleryGrid");
+    const promptForm  = document.getElementById("promptForm");
+
+    const SVG = (id, w=16, h=16) =>
+        `<span class="icon"><svg width="${w}" height="${h}"><use href="#${id}"/></svg></span>`;
+
+    // ── Custom Dropdowns ──
+    function initDropdown(wrapperId, btnId, listId, labelId, hiddenId) {
+        const wrapper = document.getElementById(wrapperId);
+        const btn     = document.getElementById(btnId);
+        const list    = document.getElementById(listId);
+        const label   = document.getElementById(labelId);
+        const hidden  = document.getElementById(hiddenId);
+
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            document.querySelectorAll(".select-wrapper.open").forEach(w => {
+                if (w !== wrapper) w.classList.remove("open");
+            });
+            wrapper.classList.toggle("open");
+        });
+
+        list.querySelectorAll("li").forEach(li => {
+            li.addEventListener("click", (e) => {
+                e.stopPropagation();
+                hidden.value = li.dataset.value;
+                const textNode = [...li.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+                label.textContent = textNode ? textNode.textContent.trim() : li.textContent.trim();
+                btn.classList.add("selected");
+                list.querySelectorAll("li").forEach(l => l.classList.remove("active"));
+                li.classList.add("active");
+                wrapper.classList.remove("open");
+            });
+        });
+    }
+
+    initDropdown("modelWrapper", "modelBtn", "modelList", "modelLabel", "modelSelect");
+    initDropdown("countWrapper", "countBtn", "countList", "countLabel", "countSelect");
+    initDropdown("ratioWrapper", "ratioBtn", "ratioList", "ratioLabel", "ratioSelect");
+
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".select-wrapper.open").forEach(w => w.classList.remove("open"));
+    });
+
+    // ── Theme ──
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        themeIcon.innerHTML = `<svg width="18" height="18"><use href="#icon-sun"/></svg>`;
+    }
+    themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+        const isDark = document.body.classList.contains("dark");
+        themeIcon.innerHTML = isDark
+            ? `<svg width="18" height="18"><use href="#icon-sun"/></svg>`
+            : `<svg width="18" height="18"><use href="#icon-moon"/></svg>`;
+        localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+
+    // ── Random Prompt ──
+    randomBtn.addEventListener("click", () => {
+        promptInput.value = RANDOM_PROMPTS[Math.floor(Math.random() * RANDOM_PROMPTS.length)];
+        promptInput.focus();
+    });
+
+    // ── Gallery Builder ──
+    function buildGallery(count, ratio) {
+        galleryGrid.innerHTML = "";
+        for (let i = 0; i < count; i++) {
+            const card = document.createElement("div");
+            card.className = "img-card loading";
+            card.style.aspectRatio = ratio;
+            card.innerHTML = `
+                <div class="status-container">
+                    <div class="spinner"></div>
+                    <span class="icon error-icon">${SVG("icon-warning", 28, 28)}</span>
+                    <p class="status-text">Generating...</p>
+                </div>
+                <img class="result-img" alt="Generated image" />
+                <div class="img-overlay">
+                    <button class="img-download-btn" title="Download">
+                        ${SVG("icon-download", 18, 18)}
+                    </button>
+                </div>
+            `;
+            galleryGrid.appendChild(card);
+        }
+    }
+
+    // ── Dimensions ──
+    function getDimensions(ratio) {
+        return {"1/1":{width:512,height:512},"16/9":{width:768,height:432},"9/16":{width:432,height:768}}[ratio]
+            || {width:512,height:512};
+    }
+
+    // ── API Call with retry ──
+    async function generateImage(prompt, model, dims, retries = 5) {
+        for (let attempt = 0; attempt < retries; attempt++) {
+            const res = await fetch(
+                `http://localhost:3000/generate?model=${encodeURIComponent(model)}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        inputs: prompt,
+                        parameters: { width: dims.width, height: dims.height },
+                    }),
+                }
+            );
+            if (res.status === 503) {
+                const json = await res.json().catch(() => ({}));
+                const wait = (json.estimated_time || 20) * 1000;
+                await new Promise(r => setTimeout(r, Math.min(wait, 20000)));
+                continue;
+            }
+            if (res.status === 429) {
+                await new Promise(r => setTimeout(r, 10000));
+                continue;
+            }
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || `HTTP ${res.status}`);
+            }
+            const blob = await res.blob();
+            if (!blob.type.startsWith("image/")) {
+                const text = await blob.text();
+                throw new Error(JSON.parse(text).error || "Unexpected response");
+            }
+            return URL.createObjectURL(blob);
+        }
+        throw new Error("Model is taking too long. Try again shortly.");
+    }
+
+    // ── Card Helpers ──
+    function setCardLoaded(card, imageUrl) {
+        const img = card.querySelector(".result-img");
+        const downloadBtn = card.querySelector(".img-download-btn");
+        img.src = imageUrl;
+        img.onload = () => {
+            card.classList.remove("loading");
+            card.classList.add("loaded");
+        };
+        downloadBtn.addEventListener("click", () => {
+            const a = document.createElement("a");
+            a.href = imageUrl;
+            a.download = `ai-image-${Date.now()}.png`;
+            a.click();
+        });
+    }
+
+    function setCardError(card, message) {
+        card.classList.remove("loading");
+        card.classList.add("error");
+        card.querySelector(".status-text").textContent = message || "Generation failed";
+    }
+
+    // ── Form Submit ──
+    promptForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (isGenerating) return;
+
+        const prompt = promptInput.value.trim();
+        const model  = document.getElementById("modelSelect").value;
+        const count  = document.getElementById("countSelect").value;
+        const ratio  = document.getElementById("ratioSelect").value;
+
+        if (!prompt) { alert("Please enter a prompt."); return; }
+        if (!model)  { alert("Please select an AI model."); return; }
+        if (!count)  { alert("Please select number of images."); return; }
+        if (!ratio)  { alert("Please select an aspect ratio."); return; }
+
+        const dims = getDimensions(ratio);
+        isGenerating = true;
+        generateBtn.disabled = true;
+        generateIcon.innerHTML = `<svg width="16" height="16" class="spin-icon"><use href="#icon-spinner"/></svg>`;
+        generateBtn.childNodes[generateBtn.childNodes.length - 1].textContent = " Generating...";
+
+        buildGallery(parseInt(count), ratio);
+        const cards = galleryGrid.querySelectorAll(".img-card");
+
+        await Promise.allSettled(
+            Array.from({ length: parseInt(count) }, (_, i) => {
+                const card = cards[i];
+                return generateImage(prompt, model, dims)
+                    .then(url => setCardLoaded(card, url))
+                    .catch(err => setCardError(card, err.message));
+            })
+        );
+
+        isGenerating = false;
+        generateBtn.disabled = false;
+        generateIcon.innerHTML = `<svg width="16" height="16"><use href="#icon-wand"/></svg>`;
+        generateBtn.childNodes[generateBtn.childNodes.length - 1].textContent = " Generate";
+    });
+</script>
+</body>
+</html>
